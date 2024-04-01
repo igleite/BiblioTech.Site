@@ -2,26 +2,26 @@ import {Component, OnInit} from '@angular/core';
 import {BaseComponentHelper} from "../../../../core/utils/base-component-helper";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder} from "@angular/forms";
-import {LivroService} from "../../services/livro.service";
-import {ILivro} from "../../interfaces/ILivro";
+import {UsuarioService} from "../../services/usuario.service";
+import {IUsuario} from "../../interfaces/IUsuario";
 import {JsonPipe} from "@angular/common";
 
 @Component({
-  selector: 'app-detalhar-livro',
+  selector: 'app-detalhar-usuario',
   standalone: true,
   imports: [
     JsonPipe
   ],
-  templateUrl: './detalhar-livro.component.html'
+  templateUrl: './detalhar-usuario.component.html'
 })
-export class DetalharLivroComponent extends BaseComponentHelper implements OnInit {
-  public item!: ILivro;
+export class DetalharUsuarioComponent extends BaseComponentHelper implements OnInit {
+  public item!: IUsuario;
 
   constructor(
     _router: Router,
     _formBuilder: FormBuilder,
-    private _livroService: LivroService,
     private _route: ActivatedRoute,
+    private _usuarioService: UsuarioService,
   ) {
     super(_router, _formBuilder);
   }
@@ -38,6 +38,7 @@ export class DetalharLivroComponent extends BaseComponentHelper implements OnIni
 
     this._load(id);
 
+
   }
 
   private _load(id: number) {
@@ -49,7 +50,7 @@ export class DetalharLivroComponent extends BaseComponentHelper implements OnIni
 
 
     this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
-      this._livroService.obterLivro(id.toString())
+      this._usuarioService.obterUsuario(id.toString())
     ).subscribe({
       complete: async () => {
         this.isLoading = false;
@@ -58,9 +59,10 @@ export class DetalharLivroComponent extends BaseComponentHelper implements OnIni
         this.isLoading = false;
         await this.notificationService.showToast('error', error.message);
       },
-      next: async (data: ILivro) => {
+      next: async (data: IUsuario) => {
         this.item = data;
       },
     });
   }
+
 }

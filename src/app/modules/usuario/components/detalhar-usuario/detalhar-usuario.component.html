@@ -1,0 +1,8 @@
+<div>
+  <p>id: {{ item.id }}</p>
+  <p>cpf: {{ item.cpf }}</p>
+  <p>name: {{ item.name }}</p>
+  <p>email: {{ item.email }}</p>
+
+  <a [href]="'/app/usuario/cadastro/' + item.id">Editar</a>
+</div>

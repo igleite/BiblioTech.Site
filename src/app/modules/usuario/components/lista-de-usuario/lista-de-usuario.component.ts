@@ -2,29 +2,28 @@ import {Component, OnInit} from '@angular/core';
 import {BaseComponentHelper} from "../../../../core/utils/base-component-helper";
 import {Router} from "@angular/router";
 import {FormBuilder} from "@angular/forms";
-import {LivroService} from "../../services/livro.service";
-import {ILivro} from "../../interfaces/ILivro";
+import {IUsuario} from "../../interfaces/IUsuario";
 import {JsonPipe, NgForOf} from "@angular/common";
+import {UsuarioService} from "../../services/usuario.service";
 import Swal, {SweetAlertResult} from "sweetalert2";
-import {NotificationService} from "../../../../core/services/notification.service";
 
 @Component({
-  selector: 'app-lista-de-livro',
+  selector: 'app-lista-de-usuario',
   standalone: true,
-  templateUrl: './lista-de-livro.component.html',
+  templateUrl: './lista-de-usuario.component.html',
   imports: [
     JsonPipe,
     NgForOf
   ],
 })
-export class ListaDeLivroComponent extends BaseComponentHelper implements OnInit {
+export class ListaDeUsuarioComponent extends BaseComponentHelper implements OnInit {
 
-  public items: ILivro[] = []
+  public items: IUsuario[] = []
 
   constructor(
     _router: Router,
     _formBuilder: FormBuilder,
-    private _livroService: LivroService,
+    private _usuarioService: UsuarioService
   ) {
     super(_router, _formBuilder);
   }
@@ -43,7 +42,7 @@ export class ListaDeLivroComponent extends BaseComponentHelper implements OnInit
     this.isLoading = true;
 
     this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
-      this._livroService.obterLivro()
+      this._usuarioService.obterUsuario()
     ).subscribe({
       complete: async () => {
         this.isLoading = false;
@@ -52,14 +51,14 @@ export class ListaDeLivroComponent extends BaseComponentHelper implements OnInit
         this.isLoading = false;
         await this.notificationService.showToast('error', error.message);
       },
-      next: async (data: ILivro[]) => {
+      next: async (data: IUsuario[]) => {
         this.items = data;
       },
     });
   }
 
   async verDetalhes(id: number) {
-    await this._router.navigate([`/app/livro/detalhar/${id}`])
+    await this._router.navigate([`app/usuario/detalhar/${id}`])
   }
 
   async deletar(id: number) {
@@ -86,12 +85,12 @@ export class ListaDeLivroComponent extends BaseComponentHelper implements OnInit
 
         this.isLoading = true;
         this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
-          this._livroService.deletarLivro(id)
+          this._usuarioService.deletarUsuario(id)
         ).subscribe({
           complete: async () => {
             this.isLoading = false;
             this._load();
-            await this.notificationService.showToast('success', 'Livro deletado com sucesso!');
+            await this.notificationService.showToast('success', 'Usuário deletado com sucesso!');
           },
           error: async (error: any): Promise<void> => {
             this.isLoading = false;
@@ -100,12 +99,11 @@ export class ListaDeLivroComponent extends BaseComponentHelper implements OnInit
           next: async () => {
           },
         });
+        
         this.isLoading = false;
         this.notificationService.swalCloseSetTimeout();
 
       },
     });
   }
-
-
 }

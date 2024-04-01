@@ -1,0 +1,19 @@
+<div class="mb-4">
+  <a class="btn btn-secondary" [href]="'app/usuario/cadastro'">Cadastrar novo usuário</a>
+  <hr>
+</div>
+
+<div *ngFor="let item of items">
+
+  <div>
+    <p>id: {{ item.id }}</p>
+    <p>cpf: {{ item.cpf }}</p>
+    <p>name: {{ item.name }}</p>
+    <p>email: {{ item.email }}</p>
+
+    <button class="btn btn-info m-1 text-white" (click)="verDetalhes(item.id)">Ver Detalhes</button>
+    <button class="btn btn-danger m-1 text-white" (click)="deletar(item.id)">Deletar</button>
+  </div>
+  <hr>
+
+</div>
