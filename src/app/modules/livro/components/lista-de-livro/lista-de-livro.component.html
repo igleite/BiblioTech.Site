@@ -1,0 +1,20 @@
+<div class="mb-4">
+  <a class="btn btn-secondary" [href]="'app/livro/cadastro'">Cadastrar novo livro</a>
+  <hr>
+</div>
+
+<div *ngFor="let item of items">
+
+  <div>
+    <p>id: {{ item.id }}</p>
+    <p>title: {{ item.title }}</p>
+    <p>author: {{ item.author }}</p>
+    <p>isbn: {{ item.isbn }}</p>
+    <p>publicationYear: {{ item.publicationYear }}</p>
+
+    <button class="btn btn-info m-1 text-white" (click)="verDetalhes(item.id)">Ver Detalhes</button>
+    <button class="btn btn-danger m-1 text-white" (click)="deletar(item.id)">Deletar</button>
+  </div>
+  <hr>
+
+</div>

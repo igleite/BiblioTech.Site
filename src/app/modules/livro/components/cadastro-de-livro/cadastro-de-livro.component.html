@@ -1,0 +1,43 @@
+<form [formGroup]="getForm" (ngSubmit)="ngSubmit()">
+  <div class="mb-3">
+    <label for="title" class="form-label">title</label>
+    <input type="text" class="form-control" id="title" formControlName="title">
+    <div *ngIf="getHasError('title')" class="text-danger">
+      <div *ngIf="getHasError('title', 'required')">O campo é de preenchimento obrigatório!</div>
+      <div *ngIf="getHasError('title', 'maxlength')">O tamanmho máximo do campo é de {{ getField('title')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!</div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="author" class="form-label">author</label>
+    <input type="text" class="form-control" id="author" formControlName="author">
+    <div *ngIf="getHasError('author')" class="text-danger">
+      <div *ngIf="getHasError('author', 'required')">O campo é de preenchimento obrigatório!</div>
+      <div *ngIf="getHasError('author', 'maxlength')">O tamanmho máximo do campo é de {{ getField('author')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!</div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="isbn" class="form-label">isbn</label>
+    <input type="text" class="form-control" id="isbn" formControlName="isbn">
+    <div *ngIf="getHasError('isbn')" class="text-danger">
+      <div *ngIf="getHasError('isbn', 'required')">O campo é de preenchimento obrigatório!</div>
+      <div *ngIf="getHasError('isbn', 'maxlength')">O tamanmho máximo do campo é de {{ getField('isbn')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!</div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="publicationYear" class="form-label">publicationYear</label>
+    <input type="number" class="form-control" id="publicationYear" formControlName="publicationYear">
+    <div *ngIf="getHasError('publicationYear')" class="text-danger">
+      <div *ngIf="getHasError('publicationYear', 'required')">O campo é de preenchimento obrigatório!</div>
+      <div *ngIf="getHasError('publicationYear', 'maxlength')">O tamanmho máximo do campo é de {{ getField('publicationYear')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!</div>
+    </div>
+  </div>
+
+
+  <button type="submit" class="btn btn-primary"
+          [disabled]="isLoading || getForm.invalid || !getForm.dirty">
+    Salvar
+  </button>
+</form>

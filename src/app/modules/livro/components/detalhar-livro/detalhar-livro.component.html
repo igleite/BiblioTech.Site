@@ -1,0 +1,9 @@
+<div>
+  <p>id: {{ item.id }}</p>
+  <p>title: {{ item.title }}</p>
+  <p>author: {{ item.author }}</p>
+  <p>isbn: {{ item.isbn }}</p>
+  <p>publicationYear: {{ item.publicationYear }}</p>
+
+  <a [href]="'/app/livro/cadastro/' + item.id">Editar</a>
+</div>
