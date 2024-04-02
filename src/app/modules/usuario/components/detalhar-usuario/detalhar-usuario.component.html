@@ -3,6 +3,24 @@
   <p>cpf: {{ item.cpf }}</p>
   <p>name: {{ item.name }}</p>
   <p>email: {{ item.email }}</p>
+  <p>blockedDate: {{ item.blockedDate | date:'dd/MM/yyyy hh:mm' }}</p>
 
   <a [href]="'/app/usuario/cadastro/' + item.id">Editar</a>
+</div>
+
+
+<div class="mt-2 border-top">
+
+  <label for="numeroDias" class="form-label">numero de Dias</label>
+  <input type="text" class="form-control" id="numeroDias" [(ngModel)]="numeroDias">
+
+  <button class="btn btn-secondary" (click)="bloquear()"
+          [disabled]="this.isLoading || this.numeroDias === 0 || !FieldUtils.isNotFieldFilled(this.item.blockedDate)">
+    Bloquear usuário
+  </button>
+  <button class="btn btn-secondary" (click)="desbloquear()"
+          [disabled]="this.isLoading || FieldUtils.isNotFieldFilled(this.item.blockedDate)">
+    Desbloquear usuário
+  </button>
+
 </div>

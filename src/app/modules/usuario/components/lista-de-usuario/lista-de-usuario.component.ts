@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {BaseComponentHelper} from "../../../../core/utils/base-component-helper";
 import {Router} from "@angular/router";
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {IUsuario} from "../../interfaces/IUsuario";
-import {JsonPipe, NgForOf} from "@angular/common";
+import {DatePipe, JsonPipe, NgForOf, NgIf} from "@angular/common";
 import {UsuarioService} from "../../services/usuario.service";
 import Swal, {SweetAlertResult} from "sweetalert2";
 
@@ -13,12 +13,17 @@ import Swal, {SweetAlertResult} from "sweetalert2";
   templateUrl: './lista-de-usuario.component.html',
   imports: [
     JsonPipe,
-    NgForOf
+    NgForOf,
+    NgIf,
+    ReactiveFormsModule,
+    FormsModule,
+    DatePipe
   ],
 })
 export class ListaDeUsuarioComponent extends BaseComponentHelper implements OnInit {
 
   public items: IUsuario[] = []
+  public cpf!: string;
 
   constructor(
     _router: Router,
@@ -99,10 +104,33 @@ export class ListaDeUsuarioComponent extends BaseComponentHelper implements OnIn
           next: async () => {
           },
         });
-        
+
         this.isLoading = false;
         this.notificationService.swalCloseSetTimeout();
 
+      },
+    });
+  }
+
+  pesquisarPorCpf() {
+    if (this.isLoading && !this.cpf) {
+      return;
+    }
+
+    this.isLoading = true;
+
+    this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
+      this._usuarioService.obterUsuarioPorCpf(this.cpf)
+    ).subscribe({
+      complete: async () => {
+        this.isLoading = false;
+      },
+      error: async (error: any): Promise<void> => {
+        this.isLoading = false;
+        await this.notificationService.showToast('error', error.message);
+      },
+      next: async (data: IUsuario) => {
+        await this.verDetalhes(data.id);
       },
     });
   }
