@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {JsonPipe, NgIf} from "@angular/common";
 import {UsuarioService} from "../../services/usuario.service";
+import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-cadastro-de-usuario',
@@ -23,23 +24,16 @@ export class CadastroDeUsuarioComponent extends BaseComponentHelper implements O
   constructor(
     _router: Router,
     _formBuilder: FormBuilder,
-    private _route: ActivatedRoute,
-    private _usuarioService: UsuarioService
+    private _usuarioService: UsuarioService,
+    public activeModal: NgbActiveModal
   ) {
     super(_router, _formBuilder);
   }
 
   override async ngOnInit(): Promise<void> {
     super.ngOnInit();
-
-    const id = Number(this._route?.snapshot?.params['id']);
-    this.edicao = !!id;
-
     this._buildForm();
-
-    if (!isNaN(id))
-      this._load(id);
-
+    this._fillData();
   }
 
 
@@ -56,32 +50,6 @@ export class CadastroDeUsuarioComponent extends BaseComponentHelper implements O
       'cpf': this.item.cpf,
       'name': this.item.name,
       'email': this.item.email,
-    });
-  }
-
-  private _load(id: number) {
-    if (this.isLoading && !this.edicao) {
-      return;
-    }
-
-    this.isLoading = true;
-
-    this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
-      this._usuarioService.obterUsuario(id.toString())
-    ).subscribe({
-      complete: async () => {
-        this.isLoading = false;
-      },
-      error: async (error: any): Promise<void> => {
-        this.isLoading = false;
-        await this.notificationService.showToast('error', error.message);
-      },
-      next: async (data: IUsuario) => {
-        if (data) {
-          this.item = data;
-          this._fillData();
-        }
-      },
     });
   }
 
@@ -113,8 +81,8 @@ export class CadastroDeUsuarioComponent extends BaseComponentHelper implements O
       ).subscribe({
         complete: async () => {
           this.isLoading = false;
-          await this._router.navigate(['app/usuario/lista']);
           await this.notificationService.showToast('success', 'Usuário atualizado com sucesso!');
+          this.activeModal.dismiss();
         },
         error: async (error: any): Promise<void> => {
           this.isLoading = false;
@@ -136,8 +104,8 @@ export class CadastroDeUsuarioComponent extends BaseComponentHelper implements O
       ).subscribe({
         complete: async () => {
           this.isLoading = false;
-          await this._router.navigate(['app/usuario/lista']);
           await this.notificationService.showToast('success', 'Usuário criado com sucesso!');
+          this.activeModal.dismiss();
         },
         error: async (error: any): Promise<void> => {
           this.isLoading = false;
@@ -150,5 +118,4 @@ export class CadastroDeUsuarioComponent extends BaseComponentHelper implements O
       this.isLoading = false;
     }
   }
-
 }

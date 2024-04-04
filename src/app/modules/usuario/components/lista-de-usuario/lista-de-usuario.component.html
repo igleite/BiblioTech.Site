@@ -1,29 +1,72 @@
-<div class="mb-4 border-bottom">
+<div class="container">
+  <div class="d-flex justify-content-center">
 
-  <label for="cpf" class="form-label">cpf</label>
-  <input type="text" class="form-control" id="cpf" [(ngModel)]="cpf">
+    <div class="col-12">
 
-  <button class="btn btn-secondary" (click)="pesquisarPorCpf()">Pesquisar usuário por CPF</button>
+      <form [formGroup]="getForm">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="CPF a ser pesquisado"
+                 formControlName="pesquisa">
+          <button class="btn btn-primary input-group-text text-white" id="basic-addon1" (click)="pesquisarPorCpf()">
 
-</div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor" style="width: 15px">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+            </svg>
 
+          </button>
+        </div>
 
-<div class="mb-4 border-bottom">
-  <a class="btn btn-secondary" [href]="'app/usuario/cadastro'">Cadastrar novo usuário</a>
-</div>
+      </form>
 
-<div *ngFor="let item of items">
+    </div>
 
-  <div>
-    <p>id: {{ item.id }}</p>
-    <p>cpf: {{ item.cpf }}</p>
-    <p>name: {{ item.name }}</p>
-    <p>email: {{ item.email }}</p>
-    <p>blockedDate: {{ item.blockedDate | date:'dd/MM/yyyy hh:mm' }}</p>
-
-    <button class="btn btn-info m-1 text-white" (click)="verDetalhes(item.id)">Ver Detalhes</button>
-    <button class="btn btn-danger m-1 text-white" (click)="deletar(item.id)">Deletar</button>
   </div>
-  <hr>
+</div>
 
+<div class="container">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">CPF</th>
+      <th scope="col">Nome</th>
+      <th scope="col">Email</th>
+      <th scope="col">Bloqueado até</th>
+      <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of items">
+      <th scope="row">
+        {{ item.cpf | formatCnpjCpf }}
+      </th>
+      <td>
+        {{ item.name }}
+      </td>
+      <td>
+        {{ item.email }}
+      </td>
+      <td>
+        {{ item.blockedDate | date:'dd/MM/yyyy hh:mm' }}
+      </td>
+      <td>
+        <div class="row">
+          <div class="col">
+            <div ngbDropdown class="d-inline-block">
+              <button type="button" class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>
+              </button>
+              <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                <button ngbDropdownItem (click)="editar(item)">Editar</button>
+                <button ngbDropdownItem (click)="bloquear(item)" *ngIf="FieldUtils.isNotFieldFilled(item.blockedDate)">Bloquear usuário</button>
+                <button ngbDropdownItem (click)="desbloquear(item)" *ngIf="!FieldUtils.isNotFieldFilled(item.blockedDate)">Desbloquear usuário</button>
+                <button ngbDropdownItem (click)="deletar(item.id)">Deletar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
 </div>

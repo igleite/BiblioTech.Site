@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {RouterOutlet} from "@angular/router";
+import packageJson from '../../../../package.json';
+
 
 @Component({
   selector: 'app-layout',
@@ -11,5 +13,7 @@ import {RouterOutlet} from "@angular/router";
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
+
+  public appJson: any = packageJson;
 
 }

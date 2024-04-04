@@ -40,4 +40,11 @@ export class LivroService extends BaseServiceHelper {
         return response;
       });
   }
+
+  obterLivroPorNome(title: string): Observable<any> {
+    return this.get<any>(`${this.baseUrl}books/GetByTitle/${title}`)
+      .pipe((response: any) => {
+        return response;
+      });
+  }
 }

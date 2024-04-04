@@ -1,21 +1,20 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from "@angular/router";
-import {LivroComponent} from "../livro/livro.component";
 import {provideHttpClient, withInterceptors} from "@angular/common/http";
 import {errorInterceptor, requestInterceptor} from "../../core/interceptor/http.interceptor";
-import {UsuarioComponent} from "../usuario/usuario.component";
+import {LayoutComponent} from "./layout.component";
 
 
 const routes: Routes = [
   {
     path: 'livro',
-    component: LivroComponent,
+    component: LayoutComponent,
     loadChildren: () => import('../livro/livro.module').then((m) => m.LivroModule),
 
   },
   {
     path: 'usuario',
-    component: UsuarioComponent,
+    component: LayoutComponent,
     loadChildren: () => import('../usuario/usuario.module').then((m) => m.UsuarioModule),
 
   },

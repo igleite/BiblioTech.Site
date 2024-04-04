@@ -1,0 +1,16 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">Bloquear</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+
+  <label for="numeroDias" class="form-label">Número de Dias</label>
+  <input type="text" class="form-control" id="numeroDias" [(ngModel)]="numeroDias">
+
+  <button class="btn btn-primary mt-2" (click)="bloquear()"
+          [disabled]="this.isLoading || this.numeroDias === 0 || !FieldUtils.isNotFieldFilled(this.item.blockedDate)">
+    Bloquear usuário
+  </button>
+
+</div>

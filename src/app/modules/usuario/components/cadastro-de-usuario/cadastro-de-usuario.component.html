@@ -1,33 +1,48 @@
-<form [formGroup]="getForm" (ngSubmit)="ngSubmit()">
-  <div class="mb-3">
-    <label for="cpf" class="form-label">cpf</label>
-    <input type="text" class="form-control" id="cpf" formControlName="cpf">
-    <div *ngIf="getHasError('cpf')" class="text-danger">
-      <div *ngIf="getHasError('cpf', 'required')">O campo é de preenchimento obrigatório!</div>
-      <div *ngIf="getHasError('cpf', 'maxlength')">O tamanmho máximo do campo é de {{ getField('cpf')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!</div>
-    </div>
-  </div>
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">Editar</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
 
-  <div class="mb-3">
-    <label for="name" class="form-label">name</label>
-    <input type="text" class="form-control" id="name" formControlName="name">
-    <div *ngIf="getHasError('name')" class="text-danger">
-      <div *ngIf="getHasError('name', 'required')">O campo é de preenchimento obrigatório!</div>
-      <div *ngIf="getHasError('name', 'maxlength')">O tamanmho máximo do campo é de {{ getField('name')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!</div>
-    </div>
-  </div>
+<div class="modal-body">
 
-  <div class="mb-3">
-    <label for="email" class="form-label">email</label>
-    <input type="email" class="form-control" id="email" formControlName="email">
-    <div *ngIf="getHasError('email')" class="text-danger">
-      <div *ngIf="getHasError('email', 'required')">O campo é de preenchimento obrigatório!</div>
-      <div *ngIf="getHasError('email', 'maxlength')">O tamanmho máximo do campo é de {{ getField('email')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!</div>
+  <form [formGroup]="getForm" (ngSubmit)="ngSubmit()">
+    <div class="mb-3">
+      <label for="cpf" class="form-label">cpf</label>
+      <input type="text" class="form-control" id="cpf" formControlName="cpf">
+      <div *ngIf="getHasError('cpf')" class="text-danger">
+        <div *ngIf="getHasError('cpf', 'required')">O campo é de preenchimento obrigatório!</div>
+        <div *ngIf="getHasError('cpf', 'maxlength')">O tamanmho máximo do campo é
+          de {{ getField('cpf')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!
+        </div>
+      </div>
     </div>
-  </div>
 
-  <button type="submit" class="btn btn-primary"
-          [disabled]="isLoading || getForm.invalid || !getForm.dirty">
-    Salvar
-  </button>
-</form>
+    <div class="mb-3">
+      <label for="name" class="form-label">name</label>
+      <input type="text" class="form-control" id="name" formControlName="name">
+      <div *ngIf="getHasError('name')" class="text-danger">
+        <div *ngIf="getHasError('name', 'required')">O campo é de preenchimento obrigatório!</div>
+        <div *ngIf="getHasError('name', 'maxlength')">O tamanmho máximo do campo é
+          de {{ getField('name')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">email</label>
+      <input type="email" class="form-control" id="email" formControlName="email">
+      <div *ngIf="getHasError('email')" class="text-danger">
+        <div *ngIf="getHasError('email', 'required')">O campo é de preenchimento obrigatório!</div>
+        <div *ngIf="getHasError('email', 'maxlength')">O tamanmho máximo do campo é
+          de {{ getField('email')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary"
+            [disabled]="isLoading || getForm.invalid || !getForm.dirty">
+      Salvar
+    </button>
+  </form>
+
+</div>

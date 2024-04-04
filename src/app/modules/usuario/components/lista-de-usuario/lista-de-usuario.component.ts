@@ -1,11 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {BaseComponentHelper} from "../../../../core/utils/base-component-helper";
 import {Router} from "@angular/router";
-import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {IUsuario} from "../../interfaces/IUsuario";
 import {DatePipe, JsonPipe, NgForOf, NgIf} from "@angular/common";
 import {UsuarioService} from "../../services/usuario.service";
 import Swal, {SweetAlertResult} from "sweetalert2";
+import {FormatCnpjCpfPipe} from "../../../../shared/pipes/format-cnpj-cpf.pipe";
+import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle, NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {FieldUtils} from "../../../../core/utils/field-utils";
+import {CadastroDeUsuarioComponent} from "../cadastro-de-usuario/cadastro-de-usuario.component";
+import {BloqueioDeUsuarioComponent} from "../bloqueio-de-usuario/bloqueio-de-usuario.component";
 
 @Component({
   selector: 'app-lista-de-usuario',
@@ -17,18 +22,23 @@ import Swal, {SweetAlertResult} from "sweetalert2";
     NgIf,
     ReactiveFormsModule,
     FormsModule,
-    DatePipe
+    DatePipe,
+    FormatCnpjCpfPipe,
+    NgbDropdown,
+    NgbDropdownToggle,
+    NgbDropdownMenu,
+    NgbDropdownItem
   ],
 })
 export class ListaDeUsuarioComponent extends BaseComponentHelper implements OnInit {
 
   public items: IUsuario[] = []
-  public cpf!: string;
 
   constructor(
     _router: Router,
     _formBuilder: FormBuilder,
-    private _usuarioService: UsuarioService
+    private _usuarioService: UsuarioService,
+    private modalService: NgbModal
   ) {
     super(_router, _formBuilder);
   }
@@ -36,7 +46,14 @@ export class ListaDeUsuarioComponent extends BaseComponentHelper implements OnIn
   override ngOnInit(): void {
     super.ngOnInit();
 
+    this._buildForm();
     this._load();
+  }
+
+  private _buildForm() {
+    this.setForm = this._formBuilder.group({
+      pesquisa: [null, [Validators.required, Validators.maxLength(100)]],
+    });
   }
 
   private _load() {
@@ -60,10 +77,6 @@ export class ListaDeUsuarioComponent extends BaseComponentHelper implements OnIn
         this.items = data;
       },
     });
-  }
-
-  async verDetalhes(id: number) {
-    await this._router.navigate([`app/usuario/detalhar/${id}`])
   }
 
   async deletar(id: number) {
@@ -113,14 +126,19 @@ export class ListaDeUsuarioComponent extends BaseComponentHelper implements OnIn
   }
 
   pesquisarPorCpf() {
-    if (this.isLoading && !this.cpf) {
+    if (this.isLoading) {
+      return;
+    }
+
+    if (FieldUtils.isNotFieldFilled(this.getField('pesquisa')?.value)) {
+      this._load();
       return;
     }
 
     this.isLoading = true;
 
     this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
-      this._usuarioService.obterUsuarioPorCpf(this.cpf)
+      this._usuarioService.obterUsuarioPorCpf(this.sanitizeString(this.getField('pesquisa')?.value))
     ).subscribe({
       complete: async () => {
         this.isLoading = false;
@@ -130,8 +148,98 @@ export class ListaDeUsuarioComponent extends BaseComponentHelper implements OnIn
         await this.notificationService.showToast('error', error.message);
       },
       next: async (data: IUsuario) => {
-        await this.verDetalhes(data.id);
+        this.items = [data];
       },
     });
   }
+
+
+  sanitizeString(inputString: string): string {
+    const numericChars = inputString.split('').filter(char => !isNaN(Number(char)));
+    return numericChars.join('');
+  }
+
+  editar(item: IUsuario) {
+    const modalRef = this.modalService.open(CadastroDeUsuarioComponent);
+    modalRef.componentInstance.item = item;
+    modalRef.componentInstance.edicao = true;
+
+    modalRef.result.then(
+      onfulfilledData => {
+        this._load();
+      },
+      onRejected => {
+        this._load();
+      }
+    );
+
+  }
+
+  bloquear(item: IUsuario) {
+    const modalRef = this.modalService.open(BloqueioDeUsuarioComponent);
+    modalRef.componentInstance.item = item;
+
+    modalRef.result.then(
+      onfulfilledData => {
+        this._load();
+      },
+      onRejected => {
+        this._load();
+      }
+    );
+  }
+
+  async desbloquear(item: IUsuario) {
+    if (this.isLoading || FieldUtils.isNotFieldFilled(item.blockedDate)) {
+      return;
+    }
+
+    const result: SweetAlertResult<any> = await this.notificationService.confirmDialog({
+      title: 'Tem certeza?',
+      // text: 'Você não poderá reverter isso!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim, desbloquear!',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    await this.notificationService.confirmDialog({
+      title: 'Aguarde!',
+      html: 'Desbloqueando...',
+      didOpen: async () => {
+        Swal.showLoading();
+
+        this.isLoading = true;
+
+
+        this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
+          this._usuarioService.desbloquearUsuario(item.id)
+        ).subscribe({
+          complete: async () => {
+            this.isLoading = false;
+            await this.notificationService.showToast('success', 'Usuário desbloqueado com sucesso!')
+          },
+          error: async (error: any): Promise<void> => {
+            this.isLoading = false;
+            await this.notificationService.showToast('error', error.message);
+          },
+          next: async (data: IUsuario) => {
+            this._load();
+          },
+        });
+
+        this.isLoading = false;
+        this.notificationService.swalCloseSetTimeout();
+
+      },
+    });
+  }
+
+  protected readonly FieldUtils = FieldUtils;
 }

@@ -51,7 +51,7 @@ export class UsuarioService extends BaseServiceHelper {
   }
 
   bloquearUsuario(book: IBloquearusuario): Observable<any> {
-    return this.post<any>(`${this.baseUrl}Users/blockUser/${book.id}`, book.days)
+    return this.post<any>(`${this.baseUrl}Users/blockUser/${book.id}?days=${book.days}`)
       .pipe((response: any) => {
         return response;
       });

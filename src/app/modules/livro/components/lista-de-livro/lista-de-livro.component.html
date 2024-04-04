@@ -1,20 +1,47 @@
-<div class="mb-4">
-  <a class="btn btn-secondary" [href]="'app/livro/cadastro'">Cadastrar novo livro</a>
-  <hr>
+<div class="container">
+  <div class="d-flex justify-content-center">
+
+    <div class="col-12">
+
+      <form [formGroup]="getForm">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Nome do livro a ser pesquisado"
+                 formControlName="pesquisa">
+          <button class="btn btn-primary input-group-text text-white" id="basic-addon1" (click)="pesquisar()">
+
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor" style="width: 15px">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+            </svg>
+
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
 </div>
 
-<div *ngFor="let item of items">
+<div class="container">
 
-  <div>
-    <p>id: {{ item.id }}</p>
-    <p>title: {{ item.title }}</p>
-    <p>author: {{ item.author }}</p>
-    <p>isbn: {{ item.isbn }}</p>
-    <p>publicationYear: {{ item.publicationYear }}</p>
+  <div class="row">
 
-    <button class="btn btn-info m-1 text-white" (click)="verDetalhes(item.id)">Ver Detalhes</button>
-    <button class="btn btn-danger m-1 text-white" (click)="deletar(item.id)">Deletar</button>
+    <div class="col-3 my-3" *ngFor="let item of items">
+
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{ item.title }}</h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary">{{ item.author }}</h6>
+          <a [href]="'/app/livro/detalhar/' + item.id" class="card-link">Ver detalhes</a>
+        </div>
+      </div>
+
+    </div>
+
+
   </div>
-  <hr>
 
 </div>

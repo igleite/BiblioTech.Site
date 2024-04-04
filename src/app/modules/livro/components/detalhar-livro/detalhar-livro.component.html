@@ -1,9 +1,11 @@
-<div>
-  <p>id: {{ item.id }}</p>
-  <p>title: {{ item.title }}</p>
-  <p>author: {{ item.author }}</p>
-  <p>isbn: {{ item.isbn }}</p>
-  <p>publicationYear: {{ item.publicationYear }}</p>
+<div class="container">
+  <div>
+    <p>Título: {{ item.title }}</p>
+    <p>Autor: {{ item.author }}</p>
+    <p>ISBN: {{ item.isbn }}</p>
+    <p>Ano de publicação: {{ item.publicationYear }}</p>
+  </div>
 
-  <a [href]="'/app/livro/cadastro/' + item.id">Editar</a>
+  <a [href]="'/app/livro/cadastro/' + item.id" class="btn btn-outline-primary m-2">Editar</a>
+  <a [href]="'/app/livro/lista'" class="btn btn-outline-secondary m-2">Voltar</a>
 </div>
