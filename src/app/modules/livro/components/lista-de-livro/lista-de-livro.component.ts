@@ -4,7 +4,7 @@ import {Router} from "@angular/router";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {LivroService} from "../../services/livro.service";
 import {ILivro} from "../../interfaces/ILivro";
-import {JsonPipe, NgForOf} from "@angular/common";
+import {JsonPipe, NgForOf, NgIf} from "@angular/common";
 import Swal, {SweetAlertResult} from "sweetalert2";
 import {NotificationService} from "../../../../core/services/notification.service";
 import {FieldUtils} from "../../../../core/utils/field-utils";
@@ -16,7 +16,8 @@ import {FieldUtils} from "../../../../core/utils/field-utils";
   imports: [
     JsonPipe,
     NgForOf,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgIf
   ],
 })
 export class ListaDeLivroComponent extends BaseComponentHelper implements OnInit {
@@ -144,5 +145,9 @@ export class ListaDeLivroComponent extends BaseComponentHelper implements OnInit
         this.items = data;
       },
     });
+  }
+
+  async cadastrar() {
+    await this._router.navigate(['app/livro/cadastro'])
   }
 }

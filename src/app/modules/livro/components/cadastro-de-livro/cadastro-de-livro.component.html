@@ -49,4 +49,10 @@
     Salvar
   </button>
   <a [href]="'/app/livro/detalhar/' + item.id" class="btn btn-outline-secondary m-2">Voltar</a>
+
+  <button type="button" class="btn btn-outline-danger" *ngIf="edicao"
+          [disabled]="isLoading"
+          (click)="excluir(item.id)">
+    Excluir
+  </button>
 </form>

@@ -159,6 +159,21 @@ export class ListaDeUsuarioComponent extends BaseComponentHelper implements OnIn
     return numericChars.join('');
   }
 
+  cadastrar() {
+    const modalRef = this.modalService.open(CadastroDeUsuarioComponent);
+    modalRef.componentInstance.edicao = false;
+
+    modalRef.result.then(
+      onfulfilledData => {
+        this._load();
+      },
+      onRejected => {
+        this._load();
+      }
+    );
+
+  }
+
   editar(item: IUsuario) {
     const modalRef = this.modalService.open(CadastroDeUsuarioComponent);
     modalRef.componentInstance.item = item;

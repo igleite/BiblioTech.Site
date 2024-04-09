@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {LivroService} from "../../services/livro.service";
 import {JsonPipe, NgIf} from "@angular/common";
+import Swal, {SweetAlertResult} from "sweetalert2";
 
 @Component({
   selector: 'app-cadastro-de-livros',
@@ -86,7 +87,7 @@ export class CadastroDeLivroComponent extends BaseComponentHelper implements OnI
   }
 
 
-  ngSubmit() {
+  async ngSubmit() {
     if (this.isLoading || this.getForm.invalid) {
       return;
     }
@@ -99,58 +100,145 @@ export class CadastroDeLivroComponent extends BaseComponentHelper implements OnI
     }
 
     if (this.edicao) {
-      this._editar(livro)
+      await this._editar(livro)
     } else {
-      this._cadastrar(livro);
+      await this._cadastrar(livro);
     }
 
 
   }
 
-  private _editar(livro: ICriarLivro) {
+  private async _editar(livro: ICriarLivro) {
     try {
-      this.isLoading = true;
-      this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
-        this._livroService.atualizarLivro(livro, this.item.id)
-      ).subscribe({
-        complete: async () => {
+
+      await this.notificationService.confirmDialog({
+        title: 'Aguarde!',
+        html: 'Salvando...',
+        didOpen: async () => {
+          Swal.showLoading();
+
+          this.isLoading = true;
+          this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
+            this._livroService.atualizarLivro(livro, this.item.id)
+          ).subscribe({
+            complete: async () => {
+              this.isLoading = false;
+              await this._router.navigate(['app/livro/lista']);
+              await this.notificationService.showToast('success', 'Livro atualizado com sucesso!');
+            },
+            error: async (error: any): Promise<void> => {
+              this.isLoading = false;
+              await this.notificationService.showToast('error', error.message);
+            },
+            next: async () => {
+            },
+          });
+
           this.isLoading = false;
-          await this._router.navigate(['app/livro/lista']);
-          await this.notificationService.showToast('success', 'Livro atualizado com sucesso!');
-        },
-        error: async (error: any): Promise<void> => {
-          this.isLoading = false;
-          await this.notificationService.showToast('error', error.message);
-        },
-        next: async () => {
+          this.notificationService.swalCloseSetTimeout();
+
         },
       });
+
     } catch {
       this.isLoading = false;
     }
   }
 
-  private _cadastrar(livro: ICriarLivro) {
+  private async _cadastrar(livro: ICriarLivro) {
     try {
-      this.isLoading = true;
-      this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
-        this._livroService.criarLivro(livro)
-      ).subscribe({
-        complete: async () => {
+
+      await this.notificationService.confirmDialog({
+        title: 'Aguarde!',
+        html: 'Cadastrando...',
+        didOpen: async () => {
+          Swal.showLoading();
+
+
+          this.isLoading = true;
+          this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
+            this._livroService.criarLivro(livro)
+          ).subscribe({
+            complete: async () => {
+              this.isLoading = false;
+              await this._router.navigate(['app/livro/lista']);
+              await this.notificationService.showToast('success', 'Livro criado com sucesso!');
+            },
+            error: async (error: any): Promise<void> => {
+              this.isLoading = false;
+              await this.notificationService.showToast('error', error.message);
+            },
+            next: async () => {
+            },
+          });
+
           this.isLoading = false;
-          await this._router.navigate(['app/livro/lista']);
-          await this.notificationService.showToast('success', 'Livro criado com sucesso!');
-        },
-        error: async (error: any): Promise<void> => {
-          this.isLoading = false;
-          await this.notificationService.showToast('error', error.message);
-        },
-        next: async () => {
+          this.notificationService.swalCloseSetTimeout();
+
         },
       });
+
     } catch {
       this.isLoading = false;
     }
   }
 
+  async excluir(id: number) {
+    if (this.isLoading) {
+      return;
+    }
+
+    const result: SweetAlertResult<any> = await this.notificationService.confirmDialog({
+      title: 'Tem certeza?',
+      text: 'Você não poderá reverter isso!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim, excluir!',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    try {
+
+      await this.notificationService.confirmDialog({
+        title: 'Aguarde!',
+        html: 'Excluindo...',
+        didOpen: async () => {
+          Swal.showLoading();
+
+          this.isLoading = true;
+
+          this.isLoading = true;
+          this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
+            this._livroService.deletarLivro(id)
+          ).subscribe({
+            complete: async () => {
+              this.isLoading = false;
+              await this._router.navigate(['app/livro/lista']);
+              await this.notificationService.showToast('success', 'Livro excluído com sucesso!');
+            },
+            error: async (error: any): Promise<void> => {
+              this.isLoading = false;
+              await this.notificationService.showToast('error', error.message);
+            },
+            next: async () => {
+            },
+          });
+
+
+          this.isLoading = false;
+          this.notificationService.swalCloseSetTimeout();
+
+        },
+      });
+
+    } catch {
+      this.isLoading = false;
+    }
+  }
 }

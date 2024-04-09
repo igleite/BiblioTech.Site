@@ -1,7 +1,7 @@
 <div class="container">
   <div class="d-flex justify-content-center">
 
-    <div class="col-12">
+    <div class="col-10">
 
       <form [formGroup]="getForm">
         <div class="input-group mb-3">
@@ -20,6 +20,13 @@
 
       </form>
 
+    </div>
+
+    <div class="col-2">
+      &nbsp;
+      <button class="btn btn-primary input-group-text text-white" (click)="cadastrar()">
+        Cadastrar
+      </button>
     </div>
 
   </div>
@@ -58,8 +65,12 @@
               </button>
               <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
                 <button ngbDropdownItem (click)="editar(item)">Editar</button>
-                <button ngbDropdownItem (click)="bloquear(item)" *ngIf="FieldUtils.isNotFieldFilled(item.blockedDate)">Bloquear usuário</button>
-                <button ngbDropdownItem (click)="desbloquear(item)" *ngIf="!FieldUtils.isNotFieldFilled(item.blockedDate)">Desbloquear usuário</button>
+                <button ngbDropdownItem (click)="bloquear(item)" *ngIf="FieldUtils.isNotFieldFilled(item.blockedDate)">
+                  Bloquear usuário
+                </button>
+                <button ngbDropdownItem (click)="desbloquear(item)"
+                        *ngIf="!FieldUtils.isNotFieldFilled(item.blockedDate)">Desbloquear usuário
+                </button>
                 <button ngbDropdownItem (click)="deletar(item.id)">Deletar</button>
               </div>
             </div>

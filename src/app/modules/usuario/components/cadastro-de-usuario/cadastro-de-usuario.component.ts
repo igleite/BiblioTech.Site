@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {BaseComponentHelper} from "../../../../core/utils/base-component-helper";
 import {ICriarusuario, IUsuario} from "../../interfaces/IUsuario";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {JsonPipe, NgIf} from "@angular/common";
 import {UsuarioService} from "../../services/usuario.service";

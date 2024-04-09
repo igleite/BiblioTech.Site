@@ -1,47 +1,68 @@
-<div class="container">
-  <div class="d-flex justify-content-center">
+<ng-container *ngIf="items.length === 0; else existeItems">
 
-    <div class="col-12">
-
-      <form [formGroup]="getForm">
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Nome do livro a ser pesquisado"
-                 formControlName="pesquisa">
-          <button class="btn btn-primary input-group-text text-white" id="basic-addon1" (click)="pesquisar()">
-
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                 stroke="currentColor" style="width: 15px">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
-            </svg>
-
-          </button>
-        </div>
-
-      </form>
-
+  <div class="container">
+    <div class="alert alert-light" role="alert">
+      Nenhum livro encontrado
     </div>
-
   </div>
-</div>
 
-<div class="container">
+</ng-container>
 
-  <div class="row">
+<ng-template #existeItems>
+  <div class="container">
+    <div class="d-flex justify-content-center">
 
-    <div class="col-3 my-3" *ngFor="let item of items">
+      <div class="col-10">
 
-      <div class="card" style="width: 18rem;">
-        <div class="card-body">
-          <h5 class="card-title">{{ item.title }}</h5>
-          <h6 class="card-subtitle mb-2 text-body-secondary">{{ item.author }}</h6>
-          <a [href]="'/app/livro/detalhar/' + item.id" class="card-link">Ver detalhes</a>
-        </div>
+        <form [formGroup]="getForm">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Nome do livro a ser pesquisado"
+                   formControlName="pesquisa">
+            <button class="btn btn-primary input-group-text text-white" id="basic-addon1" (click)="pesquisar()">
+
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                   stroke="currentColor" style="width: 15px">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+              </svg>
+
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+
+      <div class="col-2">
+        &nbsp;
+        <button class="btn btn-primary input-group-text text-white" (click)="cadastrar()">
+          Cadastrar
+        </button>
       </div>
 
     </div>
+  </div>
 
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-3 my-3" *ngFor="let item of items">
+
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title">{{ item.title }}</h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">{{ item.author }}</h6>
+            <a [href]="'/app/livro/detalhar/' + item.id" class="card-link">Ver detalhes</a>
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
 
   </div>
 
-</div>
+</ng-template>
+
