@@ -147,8 +147,11 @@ export class ListaDeUsuarioComponent extends BaseComponentHelper implements OnIn
         this.isLoading = false;
         await this.notificationService.showToast('error', error.message);
       },
-      next: async (data: IUsuario) => {
-        this.items = [data];
+      next: async (data: IUsuario[]) => {
+        if (data.length > 0)
+          this.items = data;
+        else
+          await this.notificationService.showToast('warning', 'Usuário não encontrado para o CPF fornecido.');
       },
     });
   }

@@ -142,7 +142,10 @@ export class ListaDeLivroComponent extends BaseComponentHelper implements OnInit
         await this.notificationService.showToast('error', error.message);
       },
       next: async (data: ILivro[]) => {
-        this.items = data;
+        if (data.length > 0)
+          this.items = data;
+        else
+          await this.notificationService.showToast('warning', 'Livro não encontrado para o NOME fornecido.');
       },
     });
   }
