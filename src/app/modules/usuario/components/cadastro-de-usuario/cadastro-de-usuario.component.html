@@ -8,7 +8,7 @@
   <form [formGroup]="getForm" (ngSubmit)="ngSubmit()">
     <div class="mb-3">
       <label for="cpf" class="form-label">cpf</label>
-      <input type="text" class="form-control" id="cpf" formControlName="cpf">
+      <input type="text" class="form-control" id="cpf" formControlName="cpf" mask="000.000.000-00">
       <div *ngIf="getHasError('cpf')" class="text-danger">
         <div *ngIf="getHasError('cpf', 'required')">O campo é de preenchimento obrigatório!</div>
         <div *ngIf="getHasError('cpf', 'maxlength')">O tamanmho máximo do campo é

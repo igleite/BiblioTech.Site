@@ -7,6 +7,7 @@ import {UsuarioService} from "../../services/usuario.service";
 import {FieldUtils} from "../../../../core/utils/field-utils";
 import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {NgIf} from "@angular/common";
+import {NgxMaskDirective, NgxMaskPipe} from "ngx-mask";
 
 @Component({
   selector: 'app-bloqueio-de-usuario',
@@ -14,7 +15,9 @@ import {NgIf} from "@angular/common";
   imports: [
     NgIf,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    NgxMaskDirective,
+    NgxMaskPipe
   ],
   templateUrl: './bloqueio-de-usuario.component.html',
 })
@@ -33,7 +36,11 @@ export class BloqueioDeUsuarioComponent extends BaseComponentHelper implements O
   }
 
   bloquear() {
-    if (this.isLoading || this.numeroDias === 0 || !FieldUtils.isNotFieldFilled(this.item.blockedDate)) {
+    if (this.isLoading || !this.numeroDias || !FieldUtils.isNotFieldFilled(this.item.blockedDate)) {
+      return;
+    }
+
+    if (this.numeroDias <= 0) {
       return;
     }
 

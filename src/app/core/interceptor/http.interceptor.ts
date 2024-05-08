@@ -1,9 +1,10 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { StorageService } from '../services/storage.service';
-import { catchError, throwError } from 'rxjs';
-import { Auth, ErrorObject } from '../models/auth';
-import { Router } from '@angular/router';
+import {HttpInterceptorFn} from '@angular/common/http';
+import {inject} from '@angular/core';
+import {StorageService} from '../services/storage.service';
+import {catchError, throwError} from 'rxjs';
+import {Auth, AuthErros, ErrorObject} from '../models/auth';
+import {Router} from '@angular/router';
+import {FieldUtils} from "../utils/field-utils";
 
 /**
  * Intercepta as requisições HTTP para adicionar cabeçalhos de autenticação.
@@ -40,21 +41,18 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error) => {
 
-      const authError: Auth = error;
-      const erro: ErrorObject = authError.error?.errors;
-      const mensagens: any[] = [];
+      const message: string | null | undefined = error.error?.message;
 
-      for (const key in erro) {
-        if (erro.hasOwnProperty(key)) {
-          const messages: string[] = erro[key];
-          mensagens.push(messages.toString());
+      if (FieldUtils.isNotFieldFilled(message)) {
+        const errs: AuthErros = error;
+        const err: ErrorObject = errs.error?.errors;
+
+        if (!FieldUtils.isNotFieldFilled(err)) {
+          const mensagens: string[] = Object.values(err).flat();
+          const errorMessage: string = mensagens.join('\n');
+          return throwError(() => new Error(errorMessage));
         }
-      }
 
-      let errorMessage: string = mensagens.join('\n');
-      if (!erro) {
-
-        // trata o erro para retornar uma mensagem mais apropriada, com base na resposta de erro da solicitação HTTP.
         const errorMessages: { [key: number]: string } = {
           400: 'A solicitação enviada é inválida.',
           401: 'Você deve se autenticar para acessar este recurso.',
@@ -63,15 +61,12 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           500: 'O servidor encontrou um erro inesperado.',
         };
 
-        errorMessage = errorMessages[error.status] || `Não foi possível processar a solicitação.\n Tente novamente mais tarde.`;
-
-        if (error.status === 401) {
-          storageService.logout().finally();
-        }
-
+        const errorMessage = errorMessages[error.status] || `Não foi possível processar a solicitação.\nTente novamente mais tarde.`;
+        return throwError(() => new Error(errorMessage));
       }
 
-      return throwError(() => new Error(errorMessage));
+      return throwError(() => new Error(message || ""));
+
     }),
   );
 };

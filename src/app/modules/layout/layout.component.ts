@@ -27,7 +27,6 @@ export class LayoutComponent {
   menus: MenuItem[] = [
     {label: 'Livros', route: 'app/livro'},
     {label: 'Usuários', route: 'app/usuario'},
-    {label: 'Emprestimo', route: ''}
   ]
 
   async acessarRota(route: string | undefined) {

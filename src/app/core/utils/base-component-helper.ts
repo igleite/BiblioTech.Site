@@ -1,9 +1,9 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { NotificationService } from '../services/notification.service';
-import { NavigationEnd, Router } from '@angular/router';
-import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
-import { SubscriberSink } from './subscriber-sink';
-import { ApiRequestHandlerUtil } from './api-request-handler-util';
+import {Injectable, OnDestroy, OnInit} from '@angular/core';
+import {NotificationService} from '../services/notification.service';
+import {NavigationEnd, Router} from '@angular/router';
+import {AbstractControl, FormBuilder, FormGroup} from '@angular/forms';
+import {SubscriberSink} from './subscriber-sink';
+import {ApiRequestHandlerUtil} from './api-request-handler-util';
 
 /**
  * Classe abstrata base para componentes Angular que fornece funcionalidades comuns, implementando OnInit e OnDestroy.
@@ -18,6 +18,7 @@ export abstract class BaseComponentHelper implements OnInit, OnDestroy {
   private _pageSize: number = 10;
   private _form!: FormGroup;
   private _totalItemCount: number = 0;
+  private _modalOpen: boolean = false;
 
   protected subs: SubscriberSink = new SubscriberSink();
   protected notificationService: NotificationService = new NotificationService();
@@ -96,6 +97,15 @@ export abstract class BaseComponentHelper implements OnInit, OnDestroy {
   }
 
   /**
+   * Obtém o se o modal está aberto.
+   *
+   * @returns {boolean}
+   */
+  get modalOpen(): boolean {
+    return this._modalOpen;
+  }
+
+  /**
    * Define o estado de carregamento, após um pequeno atraso..
    *
    * @param {boolean} value O novo estado de carregamento.
@@ -143,6 +153,15 @@ export abstract class BaseComponentHelper implements OnInit, OnDestroy {
   }
 
   /**
+   * Define o estado do modal.
+   *
+   * @param {boolean} open O novo estado do modal.
+   */
+  set modalOpen(open: boolean) {
+    this._modalOpen = open;
+  }
+
+  /**
    * Obtém o controle correspondente a um campo específico em um formulário.
    *
    * @param {string} fieldName - O nome do campo cujo controle está sendo buscado.
@@ -165,7 +184,7 @@ export abstract class BaseComponentHelper implements OnInit, OnDestroy {
       return false;
     }
 
-      return !!error ? control.hasError(error) : control.invalid;
+    return !!error ? control.hasError(error) : control.invalid;
   }
 
   protected validLoad(totalItem: number, formValid: boolean): boolean {
@@ -192,7 +211,7 @@ export abstract class BaseComponentHelper implements OnInit, OnDestroy {
     Object.keys(controles).forEach(controlName => {
       const controlValue = this.getField(controlName)?.value;
       const erros = this.getField(controlName)?.errors;
-      myControls.push({ ControlName: controlName, ControlValue: controlValue, Errors: erros });
+      myControls.push({ControlName: controlName, ControlValue: controlValue, Errors: erros});
     });
 
     return myControls;

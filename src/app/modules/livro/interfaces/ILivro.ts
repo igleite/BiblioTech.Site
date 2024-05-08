@@ -4,7 +4,9 @@ export interface ILivro {
   author: string;
   isbn: string;
   publicationYear: number;
+  emprestado: boolean;
 }
 
-export interface ICriarLivro extends Omit<ILivro, 'id'> {}
+export interface IAtualizarLivro extends Omit<ILivro, 'emprestado'> {}
+export interface ICriarLivro extends Omit<ILivro, 'id' | 'emprestado'> {}
 

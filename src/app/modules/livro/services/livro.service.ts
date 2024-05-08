@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BaseServiceHelper} from "../../../core/utils/base-service-helper.service";
 import {Observable} from "rxjs";
-import {ICriarLivro, ILivro} from "../interfaces/ILivro";
+import {IAtualizarLivro, ICriarLivro, ILivro} from "../interfaces/ILivro";
 
 @Injectable({
   providedIn: 'root'
@@ -27,8 +27,8 @@ export class LivroService extends BaseServiceHelper {
       });
   }
 
-  atualizarLivro(book: ICriarLivro, id: number): Observable<any> {
-    return this.put<any>(`${this.baseUrl}books/${id}`, book)
+  atualizarLivro(book: IAtualizarLivro, id: number): Observable<any> {
+    return this.put<any>(`${this.baseUrl}books`, book)
       .pipe((response: any) => {
         return response;
       });

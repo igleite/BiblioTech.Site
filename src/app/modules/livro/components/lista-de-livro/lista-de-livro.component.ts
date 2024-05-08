@@ -4,10 +4,14 @@ import {Router} from "@angular/router";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {LivroService} from "../../services/livro.service";
 import {ILivro} from "../../interfaces/ILivro";
-import {JsonPipe, NgForOf, NgIf} from "@angular/common";
+import {DatePipe, JsonPipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import Swal, {SweetAlertResult} from "sweetalert2";
-import {NotificationService} from "../../../../core/services/notification.service";
 import {FieldUtils} from "../../../../core/utils/field-utils";
+import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle, NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {CadastroDeLivroComponent} from "../cadastro-de-livro/cadastro-de-livro.component";
+import {FormatCnpjCpfPipe} from "../../../../shared/pipes/format-cnpj-cpf.pipe";
+import {EmprestimoComponent} from "../emprestimo/emprestimo.component";
+import {EmprestimoService} from "../../services/emprestimo.service";
 
 @Component({
   selector: 'app-lista-de-livro',
@@ -17,7 +21,14 @@ import {FieldUtils} from "../../../../core/utils/field-utils";
     JsonPipe,
     NgForOf,
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    DatePipe,
+    FormatCnpjCpfPipe,
+    NgbDropdown,
+    NgbDropdownItem,
+    NgbDropdownMenu,
+    NgbDropdownToggle,
+    NgClass
   ],
 })
 export class ListaDeLivroComponent extends BaseComponentHelper implements OnInit {
@@ -28,6 +39,8 @@ export class ListaDeLivroComponent extends BaseComponentHelper implements OnInit
     _router: Router,
     _formBuilder: FormBuilder,
     private _livroService: LivroService,
+    private modalService: NgbModal,
+    private _emprestimo: EmprestimoService
   ) {
     super(_router, _formBuilder);
   }
@@ -69,11 +82,11 @@ export class ListaDeLivroComponent extends BaseComponentHelper implements OnInit
     });
   }
 
-  async verDetalhes(id: number) {
-    await this._router.navigate([`/app/livro/detalhar/${id}`])
-  }
+  async excluir(id: number) {
+    if (this.isLoading) {
+      return;
+    }
 
-  async deletar(id: number) {
     const result: SweetAlertResult<any> = await this.notificationService.confirmDialog({
       title: 'Tem certeza?',
       text: 'Você não poderá reverter isso!',
@@ -81,7 +94,7 @@ export class ListaDeLivroComponent extends BaseComponentHelper implements OnInit
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Sim, deletar!',
+      confirmButtonText: 'Sim, excluir!',
       cancelButtonText: 'Cancelar',
     });
 
@@ -89,33 +102,44 @@ export class ListaDeLivroComponent extends BaseComponentHelper implements OnInit
       return;
     }
 
-    await this.notificationService.confirmDialog({
-      title: 'Aguarde!',
-      html: 'Cancelando...',
-      didOpen: async () => {
-        Swal.showLoading();
+    try {
 
-        this.isLoading = true;
-        this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
-          this._livroService.deletarLivro(id)
-        ).subscribe({
-          complete: async () => {
-            this.isLoading = false;
-            this._load();
-            await this.notificationService.showToast('success', 'Livro deletado com sucesso!');
-          },
-          error: async (error: any): Promise<void> => {
-            this.isLoading = false;
-            await this.notificationService.showToast('error', error.message);
-          },
-          next: async () => {
-          },
-        });
-        this.isLoading = false;
-        this.notificationService.swalCloseSetTimeout();
+      await this.notificationService.confirmDialog({
+        title: 'Aguarde!',
+        html: 'Excluindo...',
+        didOpen: async () => {
+          Swal.showLoading();
 
-      },
-    });
+          this.isLoading = true;
+
+          this.isLoading = true;
+          this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
+            this._livroService.deletarLivro(id)
+          ).subscribe({
+            complete: async () => {
+              this.isLoading = false;
+              await this._router.navigate(['app/livro/lista']);
+              await this.notificationService.showToast('success', 'Livro excluído com sucesso!');
+              this._load();
+            },
+            error: async (error: any): Promise<void> => {
+              this.isLoading = false;
+              await this.notificationService.showToast('error', error.message);
+            },
+            next: async () => {
+            },
+          });
+
+
+          this.isLoading = false;
+          this.notificationService.swalCloseSetTimeout();
+
+        },
+      });
+
+    } catch {
+      this.isLoading = false;
+    }
   }
 
 
@@ -151,6 +175,162 @@ export class ListaDeLivroComponent extends BaseComponentHelper implements OnInit
   }
 
   async cadastrar() {
-    await this._router.navigate(['app/livro/cadastro'])
+    if (this.modalOpen) {
+      return;
+    }
+
+    this.modalOpen = true;
+
+    const modalRef = this.modalService.open(CadastroDeLivroComponent);
+    modalRef.componentInstance.edicao = true;
+
+    modalRef.result.then(
+      onfulfilledData => {
+
+
+        this.modalOpen = false;
+        this._load();
+      },
+      onRejected => {
+
+
+        this.modalOpen = false;
+      }
+    );
+  }
+
+  editar(item: ILivro) {
+    if (this.modalOpen) {
+      return;
+    }
+
+    this.modalOpen = true;
+
+    const modalRef = this.modalService.open(CadastroDeLivroComponent);
+    modalRef.componentInstance.item = item;
+    modalRef.componentInstance.edicao = true;
+
+    modalRef.result.then(
+      onfulfilledData => {
+
+
+        this.modalOpen = false;
+        this._load();
+      },
+      onRejected => {
+
+
+        this.modalOpen = false;
+      }
+    );
+  }
+
+  verDetalhes(item: ILivro) {
+    if (this.modalOpen) {
+      return;
+    }
+
+    this.modalOpen = true;
+
+    const modalRef = this.modalService.open(CadastroDeLivroComponent);
+    modalRef.componentInstance.edicao = false;
+    modalRef.componentInstance.item = item;
+
+    modalRef.result.then(
+      onfulfilledData => {
+
+
+        this.modalOpen = false;
+      },
+      onRejected => {
+
+
+        this.modalOpen = false;
+      }
+    );
+  }
+
+  emprestar(item: ILivro) {
+    if (this.modalOpen) {
+      return;
+    }
+
+    this.modalOpen = true;
+    const modalRef = this.modalService.open(EmprestimoComponent, {size: "xl"});
+    modalRef.componentInstance.livroSelecionado = item;
+
+    modalRef.result.then(
+      onfulfilledData => {
+
+
+        this.modalOpen = false;
+        this._load();
+      },
+      onRejected => {
+
+
+        this.modalOpen = false;
+        this._load();
+      }
+    );
+  }
+
+  async devolver(item: ILivro) {
+    if (this.isLoading) {
+      return;
+    }
+
+    const result: SweetAlertResult<any> = await this.notificationService.confirmDialog({
+      title: 'Tem certeza?',
+      text: 'Você não poderá reverter isso!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim, devolver!',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    try {
+
+      await this.notificationService.confirmDialog({
+        title: 'Aguarde!',
+        html: 'Devolvendo...',
+        didOpen: async () => {
+          Swal.showLoading();
+
+          this.isLoading = true;
+
+          this.isLoading = true;
+          this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
+            this._emprestimo.deletarEmprestimo(item.id)
+          ).subscribe({
+            complete: async () => {
+              this.isLoading = false;
+              await this.notificationService.showToast('success', 'Livro devolvido com sucesso!');
+              this._load();
+            },
+            error: async (error: any): Promise<void> => {
+              this.isLoading = false;
+              await this.notificationService.showToast('error', error.message);
+            },
+            next: async () => {
+            },
+          });
+
+
+          this.isLoading = false;
+          this.notificationService.swalCloseSetTimeout();
+
+        },
+      });
+
+    } catch {
+      this.isLoading = false;
+    }
   }
 }

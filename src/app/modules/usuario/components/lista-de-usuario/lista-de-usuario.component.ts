@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {BaseComponentHelper} from "../../../../core/utils/base-component-helper";
 import {Router} from "@angular/router";
 import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {IUsuario} from "../../interfaces/IUsuario";
-import {DatePipe, JsonPipe, NgForOf, NgIf} from "@angular/common";
+import {DatePipe, JsonPipe, NgClass, NgForOf, NgIf} from "@angular/common";
 import {UsuarioService} from "../../services/usuario.service";
 import Swal, {SweetAlertResult} from "sweetalert2";
 import {FormatCnpjCpfPipe} from "../../../../shared/pipes/format-cnpj-cpf.pipe";
@@ -11,6 +11,7 @@ import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle, NgbMod
 import {FieldUtils} from "../../../../core/utils/field-utils";
 import {CadastroDeUsuarioComponent} from "../cadastro-de-usuario/cadastro-de-usuario.component";
 import {BloqueioDeUsuarioComponent} from "../bloqueio-de-usuario/bloqueio-de-usuario.component";
+import {NgxMaskDirective, NgxMaskPipe} from "ngx-mask";
 
 @Component({
   selector: 'app-lista-de-usuario',
@@ -27,10 +28,17 @@ import {BloqueioDeUsuarioComponent} from "../bloqueio-de-usuario/bloqueio-de-usu
     NgbDropdown,
     NgbDropdownToggle,
     NgbDropdownMenu,
-    NgbDropdownItem
+    NgbDropdownItem,
+    NgxMaskDirective,
+    NgxMaskPipe,
+    NgClass
   ],
 })
 export class ListaDeUsuarioComponent extends BaseComponentHelper implements OnInit {
+
+  @Input() exibirMenuOpcoes: boolean = true;
+  @Input() exibirCheckBoxSelecao: boolean = false;
+  @Output() usuario: EventEmitter<IUsuario | null> = new EventEmitter();
 
   public items: IUsuario[] = []
 
@@ -135,10 +143,12 @@ export class ListaDeUsuarioComponent extends BaseComponentHelper implements OnIn
       return;
     }
 
+    this.usuario.emit(null);
+
     this.isLoading = true;
 
     this.apiRequestHandlerUtil.handleApiRequest<any>(() =>
-      this._usuarioService.obterUsuarioPorCpf(this.sanitizeString(this.getField('pesquisa')?.value))
+      this._usuarioService.obterUsuarioPorCpf(FieldUtils.sanitizeString(this.getField('pesquisa')?.value))
     ).subscribe({
       complete: async () => {
         this.isLoading = false;
@@ -154,12 +164,6 @@ export class ListaDeUsuarioComponent extends BaseComponentHelper implements OnIn
           await this.notificationService.showToast('warning', 'Usuário não encontrado para o CPF fornecido.');
       },
     });
-  }
-
-
-  sanitizeString(inputString: string): string {
-    const numericChars = inputString.split('').filter(char => !isNaN(Number(char)));
-    return numericChars.join('');
   }
 
   cadastrar() {
@@ -260,4 +264,8 @@ export class ListaDeUsuarioComponent extends BaseComponentHelper implements OnIn
   }
 
   protected readonly FieldUtils = FieldUtils;
+
+  changeRadio(item: IUsuario) {
+    this.usuario.emit(item);
+  }
 }

@@ -1,3 +1,39 @@
+<div class="container">
+
+  <div class="d-flex justify-content-center">
+
+    <div class="col-10">
+
+      <form [formGroup]="getForm">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Nome do livro a ser pesquisado"
+                 formControlName="pesquisa">
+          <button class="btn btn-primary input-group-text text-white" id="basic-addon1" (click)="pesquisar()">
+
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor" style="width: 15px">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+            </svg>
+
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+
+    <div class="col-2">
+      &nbsp;
+      <button class="btn btn-primary input-group-text text-white" (click)="cadastrar()">
+        Cadastrar
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
 <ng-container *ngIf="items.length === 0; else existeItems">
 
   <div class="container">
@@ -9,59 +45,52 @@
 </ng-container>
 
 <ng-template #existeItems>
-  <div class="container">
-    <div class="d-flex justify-content-center">
-
-      <div class="col-10">
-
-        <form [formGroup]="getForm">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Nome do livro a ser pesquisado"
-                   formControlName="pesquisa">
-            <button class="btn btn-primary input-group-text text-white" id="basic-addon1" (click)="pesquisar()">
-
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                   stroke="currentColor" style="width: 15px">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
-              </svg>
-
-            </button>
-          </div>
-
-        </form>
-
-      </div>
-
-      <div class="col-2">
-        &nbsp;
-        <button class="btn btn-primary input-group-text text-white" (click)="cadastrar()">
-          Cadastrar
-        </button>
-      </div>
-
-    </div>
-  </div>
 
   <div class="container">
-
-    <div class="row">
-
-      <div class="col-3 my-3" *ngFor="let item of items">
-
-        <div class="card" style="width: 18rem;">
-          <div class="card-body">
-            <h5 class="card-title">{{ item.title }}</h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">{{ item.author }}</h6>
-            <a [href]="'/app/livro/detalhar/' + item.id" class="card-link">Ver detalhes</a>
+    <table class="table table-hover">
+      <thead>
+      <tr>
+        <th scope="col">title</th>
+        <th scope="col">author</th>
+        <th scope="col">isbn</th>
+        <th scope="col">publicationYear</th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let item of items">
+        <th scope="row" [ngClass]="{'text-danger': item.emprestado}">
+          {{ item.title }}
+        </th>
+        <td [ngClass]="{'text-danger': item.emprestado}">
+          {{ item.author }}
+        </td>
+        <td [ngClass]="{'text-danger': item.emprestado}">
+          {{ item.isbn }}
+        </td>
+        <td [ngClass]="{'text-danger': item.emprestado}">
+          {{ item.publicationYear }}
+        </td>
+        <td>
+          <div class="row">
+            <div class="col">
+              <div ngbDropdown class="d-inline-block">
+                <button type="button" class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                  <button ngbDropdownItem (click)="editar(item)">Editar</button>
+                  <button ngbDropdownItem (click)="verDetalhes(item)">Ver detalhes</button>
+                  <button ngbDropdownItem (click)="emprestar(item)" *ngIf="!item.emprestado">Emprestar</button>
+                  <button ngbDropdownItem (click)="devolver(item)" *ngIf="item.emprestado">Devolver</button>
+                  <button ngbDropdownItem (click)="excluir(item.id)" *ngIf="!item.emprestado">Deletar</button>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-
-      </div>
-
-
-    </div>
-
+        </td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 
 </ng-template>

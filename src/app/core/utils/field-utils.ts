@@ -30,4 +30,16 @@ export class FieldUtils {
     //
     //     return true;
     // }
+
+  /**
+   * Remove caracteres não numéricos de uma string.
+   *
+   * @param {string} inputString A string que será sanitizada.
+   * @returns {string} A string resultante após a remoção dos caracteres não numéricos.
+   */
+  public static sanitizeString(inputString: string): string {
+    const numericChars = inputString.split('').filter(char => !isNaN(Number(char)));
+    return numericChars.join('');
+  }
+
 }

@@ -1,0 +1,21 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">
+    Empréstimo
+  </h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="fecharModal()"></button>
+</div>
+
+<div class="modal-body">
+
+  <app-lista-de-usuario [exibirMenuOpcoes]="false" [exibirCheckBoxSelecao]="true"
+                        (usuario)="changeUsuario($event)"></app-lista-de-usuario>
+
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-outline-danger" (click)="fecharModal()">Cancelar</button>
+  <button class="btn btn-outline-primary" (click)="emprestar()"
+          [disabled]="FieldUtils.isNotFieldFilled(usuarioSelecionado)">
+    Emprestar
+  </button>
+</div>

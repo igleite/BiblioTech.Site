@@ -6,6 +6,8 @@ import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {JsonPipe, NgIf} from "@angular/common";
 import {UsuarioService} from "../../services/usuario.service";
 import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgxMaskDirective, NgxMaskPipe} from "ngx-mask";
+import {FieldUtils} from "../../../../core/utils/field-utils";
 
 @Component({
   selector: 'app-cadastro-de-usuario',
@@ -14,7 +16,9 @@ import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
   imports: [
     JsonPipe,
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    NgxMaskDirective,
+    NgxMaskPipe
   ],
 })
 export class CadastroDeUsuarioComponent extends BaseComponentHelper implements OnInit {
@@ -47,9 +51,9 @@ export class CadastroDeUsuarioComponent extends BaseComponentHelper implements O
 
   private _fillData(): void {
     this.getForm.patchValue({
-      'cpf': this.item.cpf,
-      'name': this.item.name,
-      'email': this.item.email,
+      'cpf': this.item?.cpf,
+      'name': this.item?.name,
+      'email': this.item?.email,
     });
   }
 
@@ -59,7 +63,7 @@ export class CadastroDeUsuarioComponent extends BaseComponentHelper implements O
     }
 
     const usuario: ICriarusuario = {
-      cpf: this.getField('cpf')?.value,
+      cpf: FieldUtils.sanitizeString(this.getField('cpf')?.value),
       name: this.getField('name')?.value,
       email: this.getField('email')?.value,
     }

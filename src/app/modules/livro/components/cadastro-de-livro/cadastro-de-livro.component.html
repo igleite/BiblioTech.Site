@@ -1,58 +1,78 @@
-<form [formGroup]="getForm" (ngSubmit)="ngSubmit()">
-  <div class="mb-3">
-    <label for="title" class="form-label">title</label>
-    <input type="text" class="form-control" id="title" formControlName="title">
-    <div *ngIf="getHasError('title')" class="text-danger">
-      <div *ngIf="getHasError('title', 'required')">O campo é de preenchimento obrigatório!</div>
-      <div *ngIf="getHasError('title', 'maxlength')">O tamanmho máximo do campo é
-        de {{ getField('title')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">
+    <span>
+      {{
+        item && edicao ? 'Edição' :
+          item && !edicao ? 'Visualização' :
+            'Cadastro'
+      }}
+    </span>
+  </h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+
+  <form [formGroup]="getForm" (ngSubmit)="ngSubmit()">
+    <div class="mb-3">
+      <label for="title" class="form-label">title</label>
+      <input type="text" class="form-control" id="title" formControlName="title" [readOnly]="!edicao">
+      <div *ngIf="getHasError('title')" class="text-danger">
+        <div *ngIf="getHasError('title', 'required')">O campo é de preenchimento obrigatório!</div>
+        <div *ngIf="getHasError('title', 'maxlength')">O tamanmho máximo do campo é
+          de {{ getField('title')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="mb-3">
-    <label for="author" class="form-label">author</label>
-    <input type="text" class="form-control" id="author" formControlName="author">
-    <div *ngIf="getHasError('author')" class="text-danger">
-      <div *ngIf="getHasError('author', 'required')">O campo é de preenchimento obrigatório!</div>
-      <div *ngIf="getHasError('author', 'maxlength')">O tamanmho máximo do campo é
-        de {{ getField('author')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!
+    <div class="mb-3">
+      <label for="author" class="form-label">author</label>
+      <input type="text" class="form-control" id="author" formControlName="author" [readOnly]="!edicao">
+      <div *ngIf="getHasError('author')" class="text-danger">
+        <div *ngIf="getHasError('author', 'required')">O campo é de preenchimento obrigatório!</div>
+        <div *ngIf="getHasError('author', 'maxlength')">O tamanmho máximo do campo é
+          de {{ getField('author')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="mb-3">
-    <label for="isbn" class="form-label">isbn</label>
-    <input type="text" class="form-control" id="isbn" formControlName="isbn">
-    <div *ngIf="getHasError('isbn')" class="text-danger">
-      <div *ngIf="getHasError('isbn', 'required')">O campo é de preenchimento obrigatório!</div>
-      <div *ngIf="getHasError('isbn', 'maxlength')">O tamanmho máximo do campo é
-        de {{ getField('isbn')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!
+    <div class="mb-3">
+      <label for="isbn" class="form-label">isbn</label>
+      <input type="text" class="form-control" id="isbn" formControlName="isbn" [readOnly]="!edicao" mask="0000000000000">
+      <div *ngIf="getHasError('isbn')" class="text-danger">
+        <div *ngIf="getHasError('isbn', 'required')">O campo é de preenchimento obrigatório!</div>
+        <div *ngIf="getHasError('isbn', 'maxlength')">O tamanmho máximo do campo é de {{ getField('isbn')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="mb-3">
-    <label for="publicationYear" class="form-label">publicationYear</label>
-    <input type="number" class="form-control" id="publicationYear" formControlName="publicationYear">
-    <div *ngIf="getHasError('publicationYear')" class="text-danger">
-      <div *ngIf="getHasError('publicationYear', 'required')">O campo é de preenchimento obrigatório!</div>
-      <div *ngIf="getHasError('publicationYear', 'maxlength')">O tamanmho máximo do campo é
-        de {{ getField('publicationYear')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!
+    <div class="mb-3">
+      <label for="publicationYear" class="form-label">publicationYear</label>
+      <input type="number" class="form-control" id="publicationYear" formControlName="publicationYear" mask="0000"
+             [readOnly]="!edicao">
+      <div *ngIf="getHasError('publicationYear')" class="text-danger">
+        <div *ngIf="getHasError('publicationYear', 'required')">O campo é de preenchimento obrigatório!</div>
+        <div *ngIf="getHasError('publicationYear', 'maxlength')">
+          O tamanmho máximo do campo é de {{ getField('publicationYear')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!
+        </div>
+        <div *ngIf="getHasError('publicationYear', 'yearValidator')">
+          O ano deverá estare entre 1500 e 2100
+        </div>
       </div>
     </div>
-  </div>
 
 
-  <button type="submit" class="btn btn-outline-primary"
-          [disabled]="isLoading || getForm.invalid || !getForm.dirty">
-    Salvar
-  </button>
-  <a [href]="'/app/livro/detalhar/' + item.id" class="btn btn-outline-secondary m-2">Voltar</a>
+    <div class="row">
 
-  <button type="button" class="btn btn-outline-danger" *ngIf="edicao"
-          [disabled]="isLoading"
-          (click)="excluir(item.id)">
-    Excluir
-  </button>
-</form>
+      <div class="col-4">
+        <button type="submit" class="btn btn-outline-primary"
+                [disabled]="isLoading || getForm.invalid || !getForm.dirty"
+                *ngIf="edicao || !item">
+          Salvar
+        </button>
+      </div>
+
+    </div>
+  </form>
+
+</div>

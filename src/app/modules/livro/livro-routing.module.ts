@@ -4,8 +4,6 @@ import {HttpClientModule, provideHttpClient, withInterceptors} from "@angular/co
 import {LivroService} from "./services/livro.service";
 import {LivroComponent} from "./livro.component";
 import {ListaDeLivroComponent} from "./components/lista-de-livro/lista-de-livro.component";
-import {DetalharLivroComponent} from "./components/detalhar-livro/detalhar-livro.component";
-import {CadastroDeLivroComponent} from "./components/cadastro-de-livro/cadastro-de-livro.component";
 import {errorInterceptor, requestInterceptor} from "../../core/interceptor/http.interceptor";
 
 const routes: Routes = [
@@ -15,9 +13,6 @@ const routes: Routes = [
     children: [
       {path: '', redirectTo: 'lista', pathMatch: 'full'},
       {path: 'lista', component: ListaDeLivroComponent},
-      {path: 'detalhar/:id', component: DetalharLivroComponent},
-      {path: 'cadastro/:id', component: CadastroDeLivroComponent},
-      {path: 'cadastro', component: CadastroDeLivroComponent},
       {
         path: '**',
         loadChildren: () => import('../error/error.module').then((m) => m.ErrorModule),
