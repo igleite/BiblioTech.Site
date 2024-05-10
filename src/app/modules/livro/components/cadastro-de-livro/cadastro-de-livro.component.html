@@ -15,7 +15,7 @@
 
   <form [formGroup]="getForm" (ngSubmit)="ngSubmit()">
     <div class="mb-3">
-      <label for="title" class="form-label">title</label>
+      <label for="title" class="form-label">Titulo</label>
       <input type="text" class="form-control" id="title" formControlName="title" [readOnly]="!edicao">
       <div *ngIf="getHasError('title')" class="text-danger">
         <div *ngIf="getHasError('title', 'required')">O campo é de preenchimento obrigatório!</div>
@@ -26,7 +26,7 @@
     </div>
 
     <div class="mb-3">
-      <label for="author" class="form-label">author</label>
+      <label for="author" class="form-label">Autor</label>
       <input type="text" class="form-control" id="author" formControlName="author" [readOnly]="!edicao">
       <div *ngIf="getHasError('author')" class="text-danger">
         <div *ngIf="getHasError('author', 'required')">O campo é de preenchimento obrigatório!</div>
@@ -37,7 +37,7 @@
     </div>
 
     <div class="mb-3">
-      <label for="isbn" class="form-label">isbn</label>
+      <label for="isbn" class="form-label">ISBN</label>
       <input type="text" class="form-control" id="isbn" formControlName="isbn" [readOnly]="!edicao" mask="0000000000000">
       <div *ngIf="getHasError('isbn')" class="text-danger">
         <div *ngIf="getHasError('isbn', 'required')">O campo é de preenchimento obrigatório!</div>
@@ -47,7 +47,7 @@
     </div>
 
     <div class="mb-3">
-      <label for="publicationYear" class="form-label">publicationYear</label>
+      <label for="publicationYear" class="form-label">Ano de publicação</label>
       <input type="number" class="form-control" id="publicationYear" formControlName="publicationYear" mask="0000"
              [readOnly]="!edicao">
       <div *ngIf="getHasError('publicationYear')" class="text-danger">
