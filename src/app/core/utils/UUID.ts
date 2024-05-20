@@ -39,5 +39,18 @@ export class UUID {
       throw new TypeError('Invalid UUID');
     }
   }
+
+  /**
+   * Verifica se uma string UUID representa o UUID vazio (todos os zeros).
+   * @param {string} uuid - A string UUID a ser verificada.
+   * @returns {boolean} Verdadeiro se o UUID for vazio, falso caso contrário.
+   */
+  public static GuidEmpty(uuid: string): boolean {
+    try {
+      return uuid === '00000000-0000-0000-0000-000000000000';
+    } catch {
+      return false;
+    }
+  }
 }
 
