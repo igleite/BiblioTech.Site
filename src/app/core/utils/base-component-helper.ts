@@ -187,10 +187,6 @@ export abstract class BaseComponentHelper implements OnInit, OnDestroy {
     return !!error ? control.hasError(error) : control.invalid;
   }
 
-  protected validLoad(totalItem: number, formValid: boolean): boolean {
-    return !(this.isLoading || totalItem === this.totalItemCount || formValid);
-  }
-
   /**
    * @description
    * Itera sobre todos os controles de um formulário e retorna uma lista de objetos contendo o nome, o valor e os erros de cada controle.
