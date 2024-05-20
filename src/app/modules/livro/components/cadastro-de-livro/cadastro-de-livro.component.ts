@@ -9,6 +9,7 @@ import Swal, {SweetAlertResult} from "sweetalert2";
 import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {NgxMaskDirective, NgxMaskPipe} from "ngx-mask";
 import {ValidatorsCustom} from "../../../../shared/validators/validatorsCustom";
+import {FormatCnpjCpfPipe} from "../../../../shared/pipes/format-cnpj-cpf.pipe";
 
 @Component({
   selector: 'app-cadastro-de-livros',
@@ -19,7 +20,8 @@ import {ValidatorsCustom} from "../../../../shared/validators/validatorsCustom";
     ReactiveFormsModule,
     NgIf,
     NgxMaskDirective,
-    NgxMaskPipe
+    NgxMaskPipe,
+    FormatCnpjCpfPipe
   ],
 })
 export class CadastroDeLivroComponent extends BaseComponentHelper implements OnInit {
@@ -39,8 +41,10 @@ export class CadastroDeLivroComponent extends BaseComponentHelper implements OnI
   override async ngOnInit(): Promise<void> {
     super.ngOnInit();
 
-    this._buildForm();
-    this._fillData();
+    if (this.edicao) {
+      this._buildForm();
+      this._fillData();
+    }
   }
 
   private _buildForm() {
