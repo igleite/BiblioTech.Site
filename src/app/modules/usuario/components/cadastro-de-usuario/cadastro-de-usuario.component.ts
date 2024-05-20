@@ -45,7 +45,7 @@ export class CadastroDeUsuarioComponent extends BaseComponentHelper implements O
     this.setForm = this._formBuilder.group({
       cpf: [null, [Validators.required, Validators.maxLength(11)]],
       name: [null, [Validators.required, Validators.maxLength(100)]],
-      email: [null, [Validators.required, Validators.maxLength(100)]],
+      email: [null, [Validators.required, Validators.maxLength(100), Validators.email]],
     });
   }
 

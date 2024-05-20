@@ -33,9 +33,8 @@
       <input type="email" class="form-control" id="email" formControlName="email">
       <div *ngIf="getHasError('email')" class="text-danger">
         <div *ngIf="getHasError('email', 'required')">O campo é de preenchimento obrigatório!</div>
-        <div *ngIf="getHasError('email', 'maxlength')">O tamanmho máximo do campo é
-          de {{ getField('email')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!
-        </div>
+        <div *ngIf="getHasError('email', 'maxlength')">O tamanmho máximo do campo é de {{ getField('email')?.errors?.['maxlength']?.['requiredLength'] }} caracteres!</div>
+        <div *ngIf="getHasError('email', 'email')">O e-mail deve ser um endereço de e-mail válido</div>
       </div>
     </div>
 
